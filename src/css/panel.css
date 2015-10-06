@@ -1,0 +1,41 @@
+html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.table-wrapper {
+    width: 50%;
+    height: 100%;
+    float: left
+}
+
+.table-scroll {
+    overflow: scroll;
+}
+
+.panels {
+    height: 100%;
+}
+
+.panel {
+    color: #00FFFF;
+    height: 100%;
+    width: 100%;
+    font-family: Verdana, Geneva, sans-serif;
+    background-color: #000080;
+}
+.panel tr { line-height: 10px; }
+
+.currentRow {
+    background-color: #008080;
+}
+
+.selectedRow {
+    color: #FFFF38;
+}
+
+td {
+    padding: 3px 2px 2px 2px;
+}

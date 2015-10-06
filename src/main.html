@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Welcome back commander</title>
+    <link rel="stylesheet" type="text/css" href="css/panel.css"/>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png"/>
+
+    <script src="js/dropzone.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <script type="application/javascript" src="js/drive.js"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="application/javascript" src="js/driveDataService.js"></script>
+    <script type="application/javascript" src="js/panel.js"></script>
+    <script type="application/javascript" src="js/commander.js"></script>
+
+    <script type='text/javascript'>//<![CDATA[
+    var c;
+    var ds = new DriveDataService();
+
+    function start() {
+        c = new Commander();
+        ds.init(c.init);
+
+    }
+
+    $('document').ready(function () {
+        var wHeight = $(window).height();
+        $('.table-scroll').css({
+            'height': wHeight + 'px'
+        });
+    });
+    //]]>
+    </script>
+</head>
+<body onload="start()">
+<button type="button" onclick="">load drive root</button>
+<form action="/file-upload"
+      class="dropzone"
+      id="my-awesome-dropzone"></form>
+<button type="button" onclick="">moveDown</button>
+<div class="panels">
+    <div class="table-wrapper">
+        <div class="table-scroll">
+            <table id="panel_right" class="panel"></table>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <div class="table-scroll">
+            <table id="panel_left" class="panel"></table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+ihuj2.0
