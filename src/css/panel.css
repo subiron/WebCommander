@@ -3,16 +3,15 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-.table-wrapper {
-    width: 50%;
-    height: 100%;
-    float: left
+    background-color: #000080;
 }
 
 .table-scroll {
-    overflow: scroll;
+    width: 50%;
+    height: 100%;
+    float: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .panels {
@@ -21,12 +20,13 @@ html, body {
 
 .panel {
     color: #00FFFF;
-    height: 100%;
     width: 100%;
     font-family: Verdana, Geneva, sans-serif;
-    background-color: #000080;
 }
-.panel tr { line-height: 10px; }
+
+.panel tr {
+    line-height: 10px;
+}
 
 .currentRow {
     background-color: #008080;

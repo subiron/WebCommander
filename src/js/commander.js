@@ -7,6 +7,9 @@ var CommanderFile = function () {
     this.type = "";
     this.isFolder = false;
     this.pId = "";
+    this.downloadLink;
+    this.webLink;
+
     this.metaData = {};
 };
 
@@ -20,6 +23,11 @@ var Commander = function () {
         //wait for datataint
         panel1.dataService = ds;
         panel2.dataService = ds;
+        document.addEventListener("openFileDialog", function (e) {
+            console.log(e.detail.webLink);
+            window.open(e.detail.webLink);
+            //TODO create dialog with 'chose what to do' options
+        });
         that.refreshBoth();
     };
 
@@ -53,8 +61,8 @@ var Commander = function () {
     };
 
     this.keyboardActions = function (event) {
-        console.log(event.keyCode)
-        //event.preventDefault();
+        console.log(event.keyCode);
+        event.preventDefault();
         switch (event.keyCode) {
             //f2
             case 113:
@@ -88,13 +96,13 @@ var Commander = function () {
 
     };
 
-    this.disableKeyDown = function (event) {
+    this.keyUpHandler = function (event) {
         event.preventDefault();
     };
 
     this.keybind = function () {
-        $(document).keydown(this.disableKeyDown);
-        $(document).keyup(this.keyboardActions);
+        $(document).keyup(this.keyUpHandler);
+        $(document).keydown(this.keyboardActions);
     };
 
     this.keybind();

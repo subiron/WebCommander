@@ -46,12 +46,17 @@ var Panel = function (id) {
             } else {
                 alert('root folder');
             }
+            return;
         }
 //go inside  folder
         if (currentItem.isFolder) {
             this.parentsDirs.push(this.currentDir);
             this.currentDir = currentItem;
             this.refresh();
+        } else {
+            var event = new CustomEvent("openFileDialog", {"detail": currentItem});
+            document.dispatchEvent(event);
+
         }
         console.log(this.parentsDirs);
     };
@@ -86,7 +91,7 @@ var Panel = function (id) {
                 this.moveCursor(0);
                 break;
             case 35:
-                this.cursorPosition = this.itemsNum;
+                this.cursorPosition = this.itemsNum - 1;
                 this.moveCursor(0);
                 break;
             case 33:
@@ -96,7 +101,7 @@ var Panel = function (id) {
                 break;
             case 34:
                 //todo CHANGE TO 'PAGINATION'
-                this.cursorPosition = this.itemsNum;
+                this.cursorPosition = this.itemsNum - 1;
                 this.moveCursor(0);
                 break;
             case 45:
@@ -109,7 +114,7 @@ var Panel = function (id) {
     };
 
     this.moveCursor = function (num) {
-        if (!((this.cursorPosition + num < 0) || (this.cursorPosition + num > this.itemsNum))) {
+        if (!((this.cursorPosition + num < 0) || (this.cursorPosition + num > this.itemsNum - 1))) {
             this.cursorPosition = num + this.cursorPosition;
             this.panel.find('.currentRow').removeClass("currentRow");
             var z = this.cursorPosition + 1;

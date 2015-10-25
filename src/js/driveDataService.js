@@ -83,7 +83,12 @@ var DriveDataService = function () {
             if (driveFile.mimeType == "application/vnd.google-apps.folder") {
                 cf.isFolder = true;
             }
-            cf.type = driveFile.mimeType;
+
+            if (!cf.isFolder) {
+                cf.webLink = driveFile.webContentLink;
+                cf.downloadLink = driveFile.downloadUrl;
+                cf.type = driveFile.mimeType;
+            }
             cf.metaData = driveFile;
             result.push(cf);
         }
@@ -128,17 +133,12 @@ var DriveDataService = function () {
         var body = {'title': copyTitle};
         if (destinationParent) {
             body.parents = [{
-
-
                 "kind": "drive#parentReference",
                 "id": destinationParent
-
-
             }];
             //body.parents.push();
         }
         console.log("copy to: " + destination.title + " : " + destination.pId);
-
         var request = gapi.client.drive.files.copy({
             'fileId': file.pId,
             'resource': body
@@ -152,7 +152,6 @@ var DriveDataService = function () {
      */
     this.getList = function (dir, callback) {
         var folder = dir.pId || dir.title;
-
         var retrievePageOfFiles = function (request, result) {
             request.execute(function (resp) {
                 result = result.concat(resp.items);
