@@ -24,9 +24,9 @@ var Commander = function () {
         panel1.dataService = ds;
         panel2.dataService = ds;
         document.addEventListener("openFileDialog", function (e) {
-            console.log(e.detail.webLink);
-            window.open(e.detail.webLink);
-            //TODO create dialog with 'chose what to do' options
+            $("#downloadLink").attr("href", e.detail.webLink);
+            $("#openDialog").modal();
+
         });
         that.refreshBoth();
     };

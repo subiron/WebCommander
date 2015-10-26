@@ -3,18 +3,18 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Welcome back commander</title>
-    <link rel="stylesheet" type="text/css" href="css/panel.css"/>
     <link rel="icon" type="image/x-icon" href="assets/favicon.png"/>
-
-    <script src="js/dropzone.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/panel.css"/>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-    <script type="application/javascript" src="js/drive.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="application/javascript" src="js/drive.js"></script>
     <script type="application/javascript" src="js/driveDataService.js"></script>
     <script type="application/javascript" src="js/panel.js"></script>
     <script type="application/javascript" src="js/commander.js"></script>
-
+    <script src="js/dropzone.js"></script>
     <script type='text/javascript'>//<![CDATA[
     var c;
     var ds = new DriveDataService();
@@ -22,7 +22,6 @@
     function start() {
         c = new Commander();
         ds.init(c.init);
-
     }
 
     $('document').ready(function () {
@@ -36,19 +35,50 @@
 </head>
 <body onload="start()">
 
-<div class="panels">
-    <div class="table-scroll">
-        <table id="panel_right" class="panel"></table>
+<div class="row wc_height">
+    <div class="col-sm-6 wc_height">
+        <div class="wc_table-scroll">
+            <table id="panel_right" class="wc_panel"></table>
+        </div>
     </div>
-    <div class="table-scroll">
-        <table id="panel_left" class="panel"></table>
+    <div class="col-sm-6 wc_height">
+        <div class="wc_table-scroll">
+            <table id="panel_left" class="wc_panel"></table>
+        </div>
     </div>
 </div>
+
+
 <!--
 <form action="/file-upload"
       class="dropzone"
       id="my-awesome-dropzone"></form>
 -->
+
+
+<!-- Copy dialog -->
+<div class="modal fade" id="openDialog" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <a id="downloadLink">Download</a>
+                <a id="downloadLink_otthers">Download2</a>
+                <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 </body>
 </html>
 ihuj2.0
