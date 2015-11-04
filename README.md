@@ -8,6 +8,9 @@ TODO
 -open -byType/byService in service specific editor(eg github text editor) or other.
 -auth creator for services
 -Finder
+-save credentials
+-get/save content content
+
 
 services:
 -Google drive

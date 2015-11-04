@@ -8,6 +8,8 @@ html, body {
 
 .wc_height {
     height: inherit;
+    margin: 0px;
+    padding: 0px;
 }
 .wc_table-scroll {
     /*float: left;*/
