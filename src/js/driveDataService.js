@@ -182,11 +182,31 @@ var DriveDataService = function () {
             "mimeType": "application/vnd.google-apps.folder"
         }).then(cb);
     };
+
+    this.delete = function (wcFile, pernamently, cb) {
+        var fileId = wcFile.pId;
+        var request;
+        if (pernamently) {
+            var request = gapi.client.drive.files.delete({
+                'fileId': fileId
+            });
+        } else {
+            request = gapi.client.drive.files.trash({
+                'fileId': fileId
+            });
+        }
+
+        request.execute(function (resp) {
+            cb();
+
+        });
+    };
+
     /*
      copy file (/)
      create folder (/)
      move file/folder ()
-     delete ()
+     delete (/)
      rename ()
      create file ()
      upload files ()

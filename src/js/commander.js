@@ -23,13 +23,6 @@ var Commander = function () {
     this.init = function (ds) {
         panel1.dataService = ds;
         panel2.dataService = ds;
-        document.addEventListener("openFileDialog", function (e) {
-            $("#downloadLink").attr("href", e.detail.webLink);
-            $("#openDialog").modal().on('hide.bs.modal', function (e) {
-                //TODO ?
-            })
-
-        });
 
         document.addEventListener("createFolderDialog", function (e) {
             $("#createFolderDialog").on('show.bs.modal', function (event) {
@@ -63,14 +56,7 @@ var Commander = function () {
     };
 
     var copySelected = function () {
-        var itemsToCopy = [];
-        if (currentPanel.selectedItems.length > 0) {
-            itemsToCopy = currentPanel.selectedItems;
-        } else {
-            itemsToCopy.push(currentPanel.getCurrentItem());
-        }
-
-        itemsToCopy.forEach(function (item) {
+        getSelected().forEach(function (item) {
             currentPanel.dataService.copyFile(item, destinationPanel.currentDir, undefined, that.copyHandler);
         });
     };
@@ -85,30 +71,76 @@ var Commander = function () {
         alert("moveRename");
     };
 
+    this.deleteHandler = function (resp) {
+        console.log("fileDeleted successfully");
+        that.refreshBoth();
+    };
+
+    var deleteSelected = function (pernament) {
+        currentPanel.getSelected().forEach(function (item) {
+            currentPanel.dataService.delete(item, pernament, that.deleteHandler);
+        });
+    };
+
     this.keyboardActions = function (event) {
         console.log(event.keyCode);
         if (!that.modalActive) {
             event.preventDefault();
             switch (event.keyCode) {
-                //f2
-                case 113:
+                case 113://f2
                     location.reload();
-                //tab
-                case 9:
+                case 9://tab
                     switchPanels();
                     break;
-                //f5
-                case 116:
+                case 116://f5
                     copySelected();
                     break;
                 case 117:
                     moveRename();
+                    break;
+                case 118: //f7 create folder
+                    this.createFolder();
+                    break;
+                case 119: //f8 delete
+                    deleteSelected(false);
+                    break;
+                case 46: //delete pernamently
+                    deleteSelected(true);
+                    break;
+                case 13:
+                    openCurrentItem();
                     break;
                 default :
                     currentPanel.command(event.keyCode);
                     break;
             }
         }
+    };
+
+    var openCurrentItem = function () {
+        var currentItem = currentPanel.getCurrentItem();
+        //open parent
+        if (currentPanel.cursorPosition == 0) {
+            if (currentPanel.parentsDirs.length != 0) {
+                currentPanel.currentDir = currentPanel.parentsDirs.pop();
+                currentPanel.refresh();
+            } else {
+                alert('root folder');
+            }
+            return;
+        }
+        //go inside  folder
+        if (currentItem.isFolder) {
+            currentPanel.parentsDirs.push(currentPanel.currentDir);
+            currentPanel.currentDir = currentItem;
+            currentPanel.refresh();
+        } else {
+            $("#downloadLink").attr("href", currentItem.webLink);
+            $("#openDialog").modal().on('hide.bs.modal', function (e) {
+                //TODO ?
+            });
+        }
+        console.log(this.parentsDirs);
     };
 
     var switchPanels = function () {

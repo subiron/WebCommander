@@ -36,30 +36,6 @@ var Panel = function (id) {
         that.moveCursor(0);
     };
 
-    this.open = function () {
-        var currentItem = this.getCurrentItem();
-        //open parent
-        if (this.cursorPosition == 0) {
-            if (this.parentsDirs.length != 0) {
-                this.currentDir = this.parentsDirs.pop();
-                this.refresh();
-            } else {
-                alert('root folder');
-            }
-            return;
-        }
-        //go inside  folder
-        if (currentItem.isFolder) {
-            this.parentsDirs.push(this.currentDir);
-            this.currentDir = currentItem;
-            this.refresh();
-        } else {
-            var event = new CustomEvent("openFileDialog", {"detail": currentItem});
-            document.dispatchEvent(event);
-        }
-        console.log(this.parentsDirs);
-    };
-
     this.select = function () {
         console.log(this.selectedItems);
 
@@ -70,11 +46,19 @@ var Panel = function (id) {
             this.panel.find('tr:nth-child(' + cssindex + ')').removeClass("selectedRow");
             this.moveCursor(1);
         } else {
-            this.selectedItems.push(this.cursorPosition);
+            this.selectedItems.push(this.fileList[this.cursorPosition]);
             this.panel.find('tr:nth-child(' + cssindex + ')').addClass("selectedRow");
             this.moveCursor(1);
         }
-        console.log(this.selectedItems);
+    };
+
+    this.getSelected = function () {
+        this.panel.find(".selectedRow").removeClass("selectedRow");
+        var items = this.selectedItems.splice(0, this.selectedItems.length);
+        if (items.length == 0) {
+            items.push(this.getCurrentItem());
+        }
+        return items;
     };
 
     this.command = function (key) {
@@ -98,9 +82,6 @@ var Panel = function (id) {
                 this.cursorPosition = 0;
                 this.moveCursor(0);
                 break;
-            case 118: //f7 create folder
-                this.createFolder();
-                break;
             case 34:
                 //todo CHANGE TO 'PAGINATION'
                 this.cursorPosition = this.itemsNum - 1;
@@ -108,9 +89,6 @@ var Panel = function (id) {
                 break;
             case 45:
                 this.select();
-                break;
-            case 13:
-                this.open();
                 break;
         }
     };
@@ -141,11 +119,5 @@ var Panel = function (id) {
         if (diffTop > 0) {
             wrapper.scrollTop = -(diffTop + 20 - wrapper.scrollTop);
         }
-    };
-
-
-    this.createFolder = function () {
-        var event = new CustomEvent("createFolderDialog", {"detail": this.currentDir});
-        document.dispatchEvent(event);
     };
 };
