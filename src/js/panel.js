@@ -98,6 +98,9 @@ var Panel = function (id) {
                 this.cursorPosition = 0;
                 this.moveCursor(0);
                 break;
+            case 118: //f7 create folder
+                this.createFolder();
+                break;
             case 34:
                 //todo CHANGE TO 'PAGINATION'
                 this.cursorPosition = this.itemsNum - 1;
@@ -138,5 +141,11 @@ var Panel = function (id) {
         if (diffTop > 0) {
             wrapper.scrollTop = -(diffTop + 20 - wrapper.scrollTop);
         }
+    };
+
+
+    this.createFolder = function () {
+        var event = new CustomEvent("createFolderDialog", {"detail": this.currentDir});
+        document.dispatchEvent(event);
     };
 };

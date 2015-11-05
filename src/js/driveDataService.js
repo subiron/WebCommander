@@ -171,5 +171,26 @@ var DriveDataService = function () {
             q: "'" + folder + "' in parents"
         });
         retrievePageOfFiles(initialRequest, []);
-    }
+    };
+
+    this.createFolder = function (name, destinationDir, cb) {
+
+        var parentdir = destinationDir.pId;
+        gapi.client.drive.files.insert({
+            "title": name,
+            "parents": [{"id": parentdir}],
+            "mimeType": "application/vnd.google-apps.folder"
+        }).then(cb);
+    };
+    /*
+     copy file (/)
+     create folder (/)
+     move file/folder ()
+     delete ()
+     rename ()
+     create file ()
+     upload files ()
+     upload folder()
+     show natie metadata ()
+     */
 };
