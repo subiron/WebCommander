@@ -23,29 +23,6 @@ var Commander = function () {
     this.init = function (ds) {
         panel1.dataService = ds;
         panel2.dataService = ds;
-
-        document.addEventListener("createFolderDialog", function (e) {
-            $("#createFolderDialog").on('show.bs.modal', function (event) {
-                that.modalActive = true;
-                var modal = $(this);
-                var createFolderButton = modal.find('#createFolderButton');
-                createFolderButton.on('keypress click', function (e) {
-                    e.preventDefault();
-                    var folderName = modal.find('#folderNameInput').val();
-                    if (e.which === 13 || e.type === 'click') {
-                        currentPanel.dataService.createFolder(folderName, currentPanel.currentDir,
-                            that.refreshBoth);
-                        $("#createFolderDialog").modal('hide');
-                    }
-                });
-                $('#folderNameInput').focus();
-            });
-
-            $("#createFolderDialog").on('hide.bs.modal', function (event) {
-                that.modalActive = false;
-            });
-            $("#createFolderDialog").modal();
-        });
         that.refreshBoth();
     };
 
@@ -66,14 +43,61 @@ var Commander = function () {
         that.refreshBoth();
     };
 
+    var isPanelsLocationTheSame = function () {
+        return panel1.currentDir === panel2.currentDir;
+    };
 
     var moveRename = function () {
-        alert("moveRename");
+        //rename only for now
+        $("#renameDialog").on('show.bs.modal', function (event) {
+            that.modalActive = true;
+            var modal = $(this);
+            var renameButton = modal.find('#renameButton');
+            renameButton.on('keypress click', function (e) {
+                e.preventDefault();
+                var newName = modal.find('#renameInput').val();
+                if (e.which === 13 || e.type === 'click') {
+                    currentPanel.dataService.rename(currentPanel.getSelected()[0]
+                        , newName, that.refreshBoth);
+                    $("#renameDialog").modal('hide');
+                }
+            });
+            $('#renameInput').focus();
+        });
+
+        $("#renameDialog").on('hide.bs.modal', function (event) {
+            that.modalActive = false;
+        });
+        $("#renameDialog").modal();
     };
 
     this.deleteHandler = function (resp) {
         console.log("fileDeleted successfully");
         that.refreshBoth();
+    };
+
+    var createFolder = function () {
+        $("#createFolderDialog").on('show.bs.modal', function (event) {
+            that.modalActive = true;
+            var modal = $(this);
+            var createFolderButton = modal.find('#createFolderButton');
+            createFolderButton.on('keypress click', function (e) {
+                e.preventDefault();
+                var folderName = modal.find('#folderNameInput').val();
+                if (e.which === 13 || e.type === 'click') {
+                    currentPanel.dataService.createFolder(folderName, currentPanel.currentDir,
+                        that.refreshBoth);
+                    $("#createFolderDialog").modal('hide');
+                }
+            });
+            $('#folderNameInput').focus();
+        });
+
+        $("#createFolderDialog").on('hide.bs.modal', function (event) {
+            that.modalActive = false;
+        });
+        $("#createFolderDialog").modal();
+
     };
 
     var deleteSelected = function (pernament) {
@@ -95,16 +119,16 @@ var Commander = function () {
                 case 116://f5
                     copySelected();
                     break;
-                case 117:
+                case 117: //f6 rename/move
                     moveRename();
                     break;
                 case 118: //f7 create folder
-                    this.createFolder();
+                    createFolder();
                     break;
                 case 119: //f8 delete
                     deleteSelected(false);
                     break;
-                case 46: //delete pernamently
+                case 46: //delete permanently
                     deleteSelected(true);
                     break;
                 case 13:

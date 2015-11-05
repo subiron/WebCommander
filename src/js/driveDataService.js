@@ -202,12 +202,24 @@ var DriveDataService = function () {
         });
     };
 
+    this.rename = function (wcFile, newTitle, cb) {
+        var fileId = wcFile.pId;
+        var body = {'title': newTitle};
+        var request = gapi.client.drive.files.patch({
+            'fileId': fileId,
+            'resource': body
+        });
+        request.execute(function (resp) {
+            cb();
+        });
+    };
+
     /*
      copy file (/)
      create folder (/)
      move file/folder ()
      delete (/)
-     rename ()
+     rename (/)
      create file ()
      upload files ()
      upload folder()
