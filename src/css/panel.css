@@ -11,6 +11,7 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
+
 .wc_table-scroll {
     /*float: left;*/
     /*width: 50%;*/
@@ -31,6 +32,10 @@ html, body {
 
 .selectedRow {
     color: #FFFF38;
+}
+
+.wc_panel_icon {
+    padding-right: 5px;
 }
 
 td {

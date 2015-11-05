@@ -29,7 +29,7 @@ var Panel = function (id) {
         var trHTML = '';
         that.panel.empty();
         $.each(that.fileList, function (i, item) {
-            trHTML += '<tr><td>' + item.title + '</td><td>' + item.size + '</td><td>' + item.type + '</td></tr>';
+            trHTML += '<tr><td>' + hui.getFileIcon(item) + item.title + '</td><td>' + item.size + '</td><td>' + item.type + '</td></tr>';
         });
         that.panel.append(trHTML);
         that.cursorPosition = 0;
@@ -48,7 +48,7 @@ var Panel = function (id) {
             }
             return;
         }
-//go inside  folder
+        //go inside  folder
         if (currentItem.isFolder) {
             this.parentsDirs.push(this.currentDir);
             this.currentDir = currentItem;
@@ -56,7 +56,6 @@ var Panel = function (id) {
         } else {
             var event = new CustomEvent("openFileDialog", {"detail": currentItem});
             document.dispatchEvent(event);
-
         }
         console.log(this.parentsDirs);
     };
@@ -126,7 +125,6 @@ var Panel = function (id) {
     };
 
     this.setCursorInView = function () {
-        //TODO fix to be row perfect scroll
         var curBB = this.panel.find('.currentRow')[0].getBoundingClientRect();
         var wrapper = this.panel.parent()[0];
         var cupanelrBB = wrapper.getBoundingClientRect();
