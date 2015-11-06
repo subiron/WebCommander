@@ -116,34 +116,39 @@ var DriveDataService = function () {
         return bPoints - aPoints;
     };
 
-
     this.getParentList = function (folder, callback, item) {
         if (item.metaData);
     };
 
-    /**
-     * Copy
-     *
-     * @param {String} originFileId ID of the origin file to copy.
-     * @param {String} copyTitle Title of the copy.
-     */
-    this.copyFile = function (file, destination, newName, callback) {
-        var destinationParent = destination.pId;
-        var copyTitle = newName || file.title;
-        var body = {'title': copyTitle};
-        if (destinationParent) {
-            body.parents = [{
-                "kind": "drive#parentReference",
-                "id": destinationParent
-            }];
-            //body.parents.push();
+    this.copyFile = function (params, cb) {
+        var batch = gapi.client.newBatch();
+        var itemsToCopy = params.src.getSelected();
+        var destinationParent = params.dst.currentDir.pId;
+
+        for (var i = 0; i < itemsToCopy.length; i++) {
+            var file = itemsToCopy[i];
+            //TODO add copy single file with rename option
+            //if(itemsToCopy.length==1){
+            //var newName = params.dialogValues['newName']
+            // var copyTitle = newName || file.title;
+            //}
+            var copyTitle = file.title;
+            var body = {'title': copyTitle};
+
+            if (destinationParent) {
+                body.parents = [{
+                    "kind": "drive#parentReference",
+                    "id": destinationParent
+                }];
+            }
+            var request = gapi.client.drive.files.copy({
+                'fileId': file.pId,
+                'resource': body
+            });
+            batch.add(request);
         }
-        console.log("copy to: " + destination.title + " : " + destination.pId);
-        var request = gapi.client.drive.files.copy({
-            'fileId': file.pId,
-            'resource': body
-        });
-        request.execute(callback);
+
+        batch.execute().then(cb);
     };
 
 
@@ -173,9 +178,10 @@ var DriveDataService = function () {
         retrievePageOfFiles(initialRequest, []);
     };
 
-    this.createFolder = function (name, destinationDir, cb) {
+    this.createFolder = function (params, cb) {
+        var parentdir = params.src.currentDir.pId;
+        var name = params.dialogValues["folderName"];
 
-        var parentdir = destinationDir.pId;
         gapi.client.drive.files.insert({
             "title": name,
             "parents": [{"id": parentdir}],
@@ -183,46 +189,37 @@ var DriveDataService = function () {
         }).then(cb);
     };
 
-    this.delete = function (wcFile, pernamently, cb) {
-        var fileId = wcFile.pId;
-        var request;
-        if (pernamently) {
-            var request = gapi.client.drive.files.delete({
-                'fileId': fileId
-            });
-        } else {
-            request = gapi.client.drive.files.trash({
-                'fileId': fileId
-            });
+    this.delete = function (params, cb) {
+        var batch = gapi.client.newBatch();
+        var itemsToRemove = params.src.getSelected();
+        var permanently = params.dialogValues['permanently'] == "on" ? true : false;
+
+        for (var i = 0; i < itemsToRemove.length; i++) {
+            var fileId = itemsToRemove[i].pId;
+            var request;
+            if (permanently) {
+                var request = gapi.client.drive.files.delete({
+                    'fileId': fileId
+                });
+            } else {
+                request = gapi.client.drive.files.trash({
+                    'fileId': fileId
+                });
+            }
+            batch.add(request);
         }
-
-        request.execute(function (resp) {
-            cb();
-
-        });
+        batch.execute.then(cb);
     };
 
-    this.rename = function (wcFile, newTitle, cb) {
-        var fileId = wcFile.pId;
+    this.rename = function (params, cb) {
+        var fileId = params.src.getSelected()[0].pId;
+        var newTitle = params.dialogValues['newName']
+
         var body = {'title': newTitle};
         var request = gapi.client.drive.files.patch({
             'fileId': fileId,
             'resource': body
         });
-        request.execute(function (resp) {
-            cb();
-        });
+        request.execute.then(cb);
     };
-
-    /*
-     copy file (/)
-     create folder (/)
-     move file/folder ()
-     delete (/)
-     rename (/)
-     create file ()
-     upload files ()
-     upload folder()
-     show natie metadata ()
-     */
 };

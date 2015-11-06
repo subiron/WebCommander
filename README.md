@@ -13,11 +13,24 @@ TODO
 
 
 services:
--Google drive
--DropBox
--Github ! (repo finder )
--slingRepo jcr/davex
--webdav
+-Google drive (~)
+ -copy files (/)
+ -create folder (/)
+ -delete (/)
+ -download (/)
+ -rename (/)
+ -move file/folder ()
+ -edit content ()
+ -create file ()
+ -upload files ()
+ -upload folder()
+ -show native metadata ()
+
+-DropBox ()
+-Github ()
+-jcr/slingRepo ()
+-webdav ()
+-sftp ()
 
 
 Storage for credentials.

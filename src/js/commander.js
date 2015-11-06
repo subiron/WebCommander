@@ -26,16 +26,24 @@ var Commander = function () {
         that.refreshBoth();
     };
 
-
     this.refreshBoth = function () {
         panel1.refresh();
         panel2.refresh();
     };
 
     var copySelected = function () {
-        getSelected().forEach(function (item) {
-            currentPanel.dataService.copyFile(item, destinationPanel.currentDir, undefined, that.copyHandler);
-        });
+        var dialogData = {
+            dialogName: "copy",
+            focusOnSelector: "",
+            action: currentPanel.dataService.copyFile,
+            reaction: that.copyHandler,
+            params: {
+                src: currentPanel,
+                dst: destinationPanel,
+                dialogValues: {}
+            }
+        };
+        createDialog(dialogData);
     };
 
     this.copyHandler = function (resp) {
@@ -48,63 +56,104 @@ var Commander = function () {
     };
 
     var moveRename = function () {
-        //rename only for now
-        $("#renameDialog").on('show.bs.modal', function (event) {
-            that.modalActive = true;
-            var modal = $(this);
-            var renameButton = modal.find('#renameButton');
-            renameButton.on('keypress click', function (e) {
-                e.preventDefault();
-                var newName = modal.find('#renameInput').val();
-                if (e.which === 13 || e.type === 'click') {
-                    currentPanel.dataService.rename(currentPanel.getSelected()[0]
-                        , newName, that.refreshBoth);
-                    $("#renameDialog").modal('hide');
-                }
-            });
-            $('#renameInput').focus();
-        });
-
-        $("#renameDialog").on('hide.bs.modal', function (event) {
-            that.modalActive = false;
-        });
-        $("#renameDialog").modal();
-    };
-
-    this.deleteHandler = function (resp) {
-        console.log("fileDeleted successfully");
-        that.refreshBoth();
+        //rename only... for now
+        var dialogData = {
+            dialogName: "rename",
+            focusOnSelector: "#renameInput",
+            action: currentPanel.dataService.rename,
+            reaction: that.refreshBoth,
+            params: {
+                src: currentPanel,
+                dst: destinationPanel,
+                dialogValues: {}
+            }
+        };
+        createDialog(dialogData);
     };
 
     var createFolder = function () {
-        $("#createFolderDialog").on('show.bs.modal', function (event) {
+        var dialogData = {
+            dialogName: "createFolder",
+            focusOnSelector: "#folderNameInput",
+            action: currentPanel.dataService.createFolder,
+            reaction: that.refreshBoth,
+            params: {
+                src: currentPanel,
+                dst: destinationPanel,
+                dialogValues: {}
+            }
+        };
+        createDialog(dialogData);
+    };
+
+    var deleteSelected = function () {
+        var dialogData = {
+            dialogName: "delete",
+            focusOnSelector: "#permanentCheckbox",
+            action: currentPanel.dataService.delete,
+            reaction: that.refreshBoth,
+            params: {
+                src: currentPanel,
+                dst: destinationPanel,
+                dialogValues: {}
+            }
+        };
+        createDialog(dialogData);
+    };
+
+    var createDialog = function (dialogData) {
+        if (that.modalActive) {
+            return;
+        }
+
+        $("#" + dialogData.dialogName + "Dialog").on('show.bs.modal', function (event) {
             that.modalActive = true;
             var modal = $(this);
-            var createFolderButton = modal.find('#createFolderButton');
-            createFolderButton.on('keypress click', function (e) {
+            var confirmButton = modal.find('button[name="confirm"]');
+
+            var cleanup = modal.find("input");
+            for (var i = 0; i < cleanup.length; i++) {
+                //exclude by name for now(default values will be stored in setting later)
+                if (cleanup[i].name == "permanently") {
+                    continue;
+                }
+                cleanup[i].value = "";
+            }
+
+            confirmButton.on('keypress click', function (e) {
                 e.preventDefault();
-                var folderName = modal.find('#folderNameInput').val();
                 if (e.which === 13 || e.type === 'click') {
-                    currentPanel.dataService.createFolder(folderName, currentPanel.currentDir,
-                        that.refreshBoth);
-                    $("#createFolderDialog").modal('hide');
+                    // get all input values from dialog
+                    var dialoginputs = modal.find("input");
+                    for (var i = 0; i < dialoginputs.length; i++) {
+                        dialogData.params.dialogValues[dialoginputs[i].name] = dialoginputs[i].value;
+                    }
+                    //execute command
+                    console.log("creating a folder...");
+                    dialogData.action(dialogData.params, dialogData.reaction);
+                    $("#" + dialogData.dialogName + "Dialog").modal('hide');
                 }
             });
-            $('#folderNameInput').focus();
+
+            if (dialogData.focusOnSelector == dialogData.focusOnSelector || dialogData.focusOnId) {
+                dialogData.focusOnSelector = 'button[name="confirm"]';
+            }
+            $(dialogData.focusOnSelector).focus();
         });
 
-        $("#createFolderDialog").on('hide.bs.modal', function (event) {
+        $("#" + dialogData.dialogName + "Dialog").on('hide.bs.modal', function (event) {
             that.modalActive = false;
+            //remove listeners
+            var modal = $(this);
+            var confirmButton = modal.find('button[name="confirm"]');
+            confirmButton.off("keypress click");
+            $("#" + dialogData.dialogName + "Dialog").off('show.bs.modal');
         });
-        $("#createFolderDialog").modal();
 
+
+        $("#" + dialogData.dialogName + "Dialog").modal();
     };
 
-    var deleteSelected = function (pernament) {
-        currentPanel.getSelected().forEach(function (item) {
-            currentPanel.dataService.delete(item, pernament, that.deleteHandler);
-        });
-    };
 
     this.keyboardActions = function (event) {
         console.log(event.keyCode);
@@ -126,10 +175,10 @@ var Commander = function () {
                     createFolder();
                     break;
                 case 119: //f8 delete
-                    deleteSelected(false);
+                    deleteSelected();
                     break;
                 case 46: //delete permanently
-                    deleteSelected(true);
+                    deleteSelected();
                     break;
                 case 13:
                     openCurrentItem();
@@ -175,7 +224,6 @@ var Commander = function () {
             currentPanel = panel1;
             destinationPanel = panel2;
         }
-
     };
 
     this.keyUpHandler = function (event) {

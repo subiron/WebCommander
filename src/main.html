@@ -93,11 +93,12 @@
                 <form role="form">
                     <div class="form-group">
                         <label for="folderNameInput"><span class="glyphicon glyphicon-folder-close"></span> Folder Name</label>
-                        <input type="text" class="form-control" id="folderNameInput" placeholder="Folder name"
+                        <input type="text" name="folderName" class="form-control" id="folderNameInput"
+                               placeholder="Folder name"
                                autofocus/>
                     </div>
-                    <button type="submit" id="createFolderButton" class="btn btn-success btn-block"><span
-                            class="glyphicon glyphicon-off"></span> Create
+                    <button name="confirm" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-off"></span>Create
                     </button>
                 </form>
             </div>
@@ -122,11 +123,11 @@
                     <div class="form-group">
                         <label for="renameInput"><span class="glyphicon glyphicon-folder-close"></span>New
                             name</label>
-                        <input type="text" class="form-control" id="renameInput" placeholder="New Name"
+                        <input type="text" name="newName" class="form-control" id="renameInput" placeholder="New Name"
                                autofocus/>
                     </div>
-                    <button type="submit" id="renameButton" class="btn btn-success btn-block"><span
-                            class="glyphicon glyphicon-off"></span> Rename
+                    <button name="confirm" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-off"></span>Rename
                     </button>
                 </form>
             </div>
@@ -134,7 +135,61 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
+    </div>
+</div>
 
+
+<!-- delete dialog -->
+<div class="modal fade" id="deleteDialog" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Are you sure that you want to delete those files?</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="permanentCheckbox" id="deleteInfo"><span
+                                class="glyphicon glyphicon-remove-sign"></span>Delete permanently ?</label>
+                        <input type="checkbox" class="form-control" name="permanently" id="permanentCheckbox"
+                               autofocus/>
+                    </div>
+                    <button name="confirm" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-off"></span> Delete
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- copy dialog -->
+<div class="modal fade" id="copyDialog" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Are you sure that you want to copy those files?</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="permanentCheckbox" id="copy"><span
+                                class="glyphicon glyphicon-remove-sign"></span>Copy...</label>
+                    </div>
+                    <button name="confirm" class="btn btn-success btn-block"><span
+                            class="glyphicon glyphicon-off"></span> Copy!
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 
